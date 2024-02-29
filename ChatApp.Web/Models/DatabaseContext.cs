@@ -8,4 +8,6 @@ public class DatabaseContext : DbContext
       : base(options) { }
 
   public DbSet<Message> Messages => Set<Message>();
+
+  public DbSet<User> Users => Set<User>();
 }
