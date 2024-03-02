@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useSignalR from "./useSignalR";
+import Board from "./components/ui/board";
 
 export default function App() {
   const [tiles, setTiles] = useState<number[][]>(
@@ -86,29 +87,7 @@ export default function App() {
     <div className="App">
       <h1>3x3 Board</h1>
       <p>{connection ? "Connected" : "Not connected"}</p>
-      <table>
-        <tbody>
-          {tiles.map((row, rowIndex) => (
-            <tr key={rowIndex}>
-              {row.map((value, columnIndex) => (
-                <td
-                  key={columnIndex}
-                  onClick={() => handleClick(rowIndex, columnIndex)}
-                  style={{
-                    cursor: "pointer",
-                    width: 50,
-                    height: 50,
-                    border: "1px solid black",
-                    textAlign: "center",
-                  }}
-                >
-                  {value !== null ? value : ""}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Board tiles={tiles} onClick={handleClick} />
     </div>
   );
 }
