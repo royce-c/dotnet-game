@@ -10,4 +10,12 @@ public class DatabaseContext : DbContext
   public DbSet<Message> Messages => Set<Message>();
 
   public DbSet<User> Users => Set<User>();
+
+  public DbSet<Tile> Tiles => Set<Tile>();
+
+  protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Tile>()
+                .HasKey(t => t.Id); // Define the primary key for the Tile entity
+        }
 }
