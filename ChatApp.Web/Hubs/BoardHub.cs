@@ -5,13 +5,13 @@ public class BoardHub : Hub
 {
     public override Task OnConnectedAsync()
     {
-        Console.WriteLine("A Client Connected: " + Context.ConnectionId);
+        // Console.WriteLine("A Client Connected: " + Context.ConnectionId);
         return base.OnConnectedAsync();
     }
 
     public override Task OnDisconnectedAsync(Exception exception)
     {
-        Console.WriteLine("A client disconnected: " + Context.ConnectionId);
+        // Console.WriteLine("A client disconnected: " + Context.ConnectionId);
         return base.OnDisconnectedAsync(exception);
     }
 
