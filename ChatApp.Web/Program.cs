@@ -27,9 +27,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
-app.MapHub<BoardHub>("/r/boardHub");
+app.MapHub<GameHub>("/r/gameHub");
 app.MapHub<ChatHub>("/r/chatHub");
-app.MapHub<UserHub>("/r/userHub");
 
 app.MapGet("/test", () => "Hello World!");
 

@@ -5,7 +5,7 @@ export default function App() {
   const [tiles, setTiles] = useState<number[][]>(
     Array(3).fill(Array(3).fill(null))
   );
-  const { connection } = useSignalR("/r/boardHub");
+  const { connection } = useSignalR("/r/gameHub");
 
   useEffect(() => {
     // Initial fetch for initial state

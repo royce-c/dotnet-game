@@ -11,9 +11,9 @@ namespace MyApp.Controllers;
 public class UsersController : ControllerBase
 {
   private readonly DatabaseContext _context;
-  private readonly IHubContext<UserHub> _hubContext;
+  private readonly IHubContext<GameHub> _hubContext;
 
-  public UsersController(DatabaseContext context, IHubContext<UserHub> hubContext)
+  public UsersController(DatabaseContext context, IHubContext<GameHub> hubContext)
   {
     _context = context;
     _hubContext = hubContext;

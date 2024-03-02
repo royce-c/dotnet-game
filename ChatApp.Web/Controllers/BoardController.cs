@@ -11,9 +11,9 @@ namespace MyApp.Controllers;
 public class BoardController : ControllerBase
 {
     private readonly DatabaseContext _context;
-    private readonly IHubContext<BoardHub> _hubContext;
+    private readonly IHubContext<GameHub> _hubContext;
 
-    public BoardController(DatabaseContext context, IHubContext<BoardHub> hubContext)
+    public BoardController(DatabaseContext context, IHubContext<GameHub> hubContext)
     {
         _context = context;
         _hubContext = hubContext;

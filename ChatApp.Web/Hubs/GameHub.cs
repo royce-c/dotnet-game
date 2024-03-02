@@ -1,7 +1,7 @@
 namespace ChatApp.Web.Hubs;
 using Microsoft.AspNetCore.SignalR;
 
-public class BoardHub : Hub
+public class GameHub : Hub
 {
     public override Task OnConnectedAsync()
     {
