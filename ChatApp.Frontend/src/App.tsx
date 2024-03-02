@@ -9,13 +9,13 @@ export default function App() {
     Array(3).fill(Array(3).fill(null))
   );
   const { connection } = useSignalR("/r/gameHub");
+  const [username, setUsername] = useState("");
+  const [usernames, setUsernames] = useState<string[]>([]);
 
   useEffect(() => {
     // Initial fetch for initial state
     fetchLayout().then(setTiles);
-  }, []);
 
-  useEffect(() => {
     if (connection) {
       // Event listener for updates from server
       connection.on("UpdateTile", (row: number, column: number, value: number) => {
@@ -25,15 +25,48 @@ export default function App() {
           return newTiles;
         });
       });
+
+      // Event listener for new usernames
+      connection.on("ReceiveMessage", (newUsername: string) => {
+        setUsernames((prevUsernames) => [...prevUsernames, newUsername]);
+      });
+
+      // Event listener for receiving all usernames on connect
+      connection.on("ReceiveUsernames", (allUsernames: string[]) => {
+        setUsernames(allUsernames);
+      });
     }
 
     // Cleanup for preventing memory leaks
     return () => {
       if (connection) {
         connection.off("UpdateTile");
+        connection.off("ReceiveMessage");
+        connection.off("ReceiveUsernames");
       }
     };
   }, [connection]);
+
+  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(event.target.value);
+  };
+
+  const handleUsernameSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    try {
+      await fetch("/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username }),
+      });
+      setUsername("");
+    } catch (error) {
+      console.error("Error creating username:", error);
+      // Handle error gracefully
+    }
+  };
 
   const handleClickWrapper = async (row: number, column: number) => {
     try {
@@ -49,6 +82,21 @@ export default function App() {
     <div className="App">
       <h1>3x3 Board</h1>
       <p>{connection ? "Connected" : "Not connected"}</p>
+      <form onSubmit={handleUsernameSubmit}>
+        <input
+          type="text"
+          value={username}
+          onChange={handleUsernameChange}
+          placeholder="Enter username"
+        />
+        <button type="submit">Set Username</button>
+      </form>
+      <h2>Usernames:</h2>
+      <ul>
+        {usernames.map((name) => (
+          <li key={name}>{name}</li>
+        ))}
+      </ul>
       <Board tiles={tiles} onClick={handleClickWrapper} />
     </div>
   );
