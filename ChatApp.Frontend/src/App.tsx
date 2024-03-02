@@ -2,61 +2,63 @@ import React, { useEffect, useState } from "react";
 import useSignalR from "./useSignalR";
 
 export default function App() {
-  const { connection } = useSignalR("/r/boardHub");
   const [tiles, setTiles] = useState<number[][]>([]);
+  const { connection } = useSignalR("/r/boardHub");
 
   useEffect(() => {
-    async function fetchLayout() {
-      const result = await fetch("/api/board");
-      const tiles = await result.json();
-      setTiles(tiles);
-    }
-
+    // Initial fetch for initial state
     fetchLayout();
+  }, []);
 
+  useEffect(() => {
     if (connection) {
+      // Event listener for updates from server
       connection.on("UpdateTile", (row: number, column: number, value: number) => {
-        const newTiles = [...tiles];
-        newTiles[row][column] = value;
-        setTiles(newTiles);
+        setTiles((prevTiles) => {
+          const newTiles = [...prevTiles];
+          newTiles[row][column] = value;
+          return newTiles;
+        });
       });
     }
 
+    // Cleanup for preventing memory leaks
     return () => {
       if (connection) {
         connection.off("UpdateTile");
       }
     };
-  }, [connection, tiles]);
-
-  const changeTile = async (row: number, column: number, value: number) => {
-    const response = await fetch("/api/board", {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        row: row,
-        column: column,
-        value: value
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return await response.json();
-  };
+  }, [connection]);
 
   const handleClick = async (row: number, column: number) => {
+    // Update local state immediately
     const tileValue = tiles[row][column];
     const newValue = tileValue === null ? 0 : (tileValue + 1) % 3;
-    const newTiles = [...tiles];
-    newTiles[row][column] = newValue;
-    setTiles(newTiles);
-    await changeTile(row, column, newValue);
+    setTiles((prevTiles) => {
+      const newTiles = [...prevTiles];
+      newTiles[row][column] = newValue;
+      return newTiles;
+    });
+
+    // Notify server with the updated value
+    if (connection) {
+      connection.invoke("UpdateTile", row, column, newValue);
+    }
   };
+
+  async function fetchLayout() {
+    try {
+      const response = await fetch("/api/board");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const tiles = await response.json();
+      setTiles(tiles);
+    } catch (error) {
+      console.error("Error fetching board layout:", error);
+      // Handle error gracefully
+    }
+  }
 
   return (
     <div className="App">
