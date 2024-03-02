@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useSignalR from "./useSignalR";
 import Board from "./components/ui/board";
+import handleClick from "./handleClick";
+import fetchLayout from "./fetchLayout";
 
 export default function App() {
   const [tiles, setTiles] = useState<number[][]>(
@@ -10,7 +12,7 @@ export default function App() {
 
   useEffect(() => {
     // Initial fetch for initial state
-    fetchLayout();
+    fetchLayout().then(setTiles);
   }, []);
 
   useEffect(() => {
@@ -33,35 +35,9 @@ export default function App() {
     };
   }, [connection]);
 
-  const handleClick = async (row: number, column: number) => {
+  const handleClickWrapper = async (row: number, column: number) => {
     try {
-      // Update local state immediately
-      const tileValue = tiles[row][column];
-      const newValue = tileValue === null ? 0 : (tileValue + 1) % 3;
-      setTiles((prevTiles) => {
-        const newTiles = [...prevTiles];
-        newTiles[row][column] = newValue;
-        return newTiles;
-      });
-
-      // Notify server with the updated value
-      const response = await fetch(`/api/board?row=${row}&column=${column}&value=${newValue}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          row,
-          column,
-          value: newValue
-        })
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      // Update local state based on the response
-      const updatedTiles = await response.json();
+      const updatedTiles = await handleClick(row, column, tiles);
       setTiles(updatedTiles);
     } catch (error) {
       console.error("Error updating tile:", error);
@@ -69,25 +45,11 @@ export default function App() {
     }
   };
 
-  async function fetchLayout() {
-    try {
-      const response = await fetch("/api/board");
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const tiles = await response.json();
-      setTiles(tiles);
-    } catch (error) {
-      console.error("Error fetching board layout:", error);
-      // Handle error gracefully
-    }
-  }
-
   return (
     <div className="App">
       <h1>3x3 Board</h1>
       <p>{connection ? "Connected" : "Not connected"}</p>
-      <Board tiles={tiles} onClick={handleClick} />
+      <Board tiles={tiles} onClick={handleClickWrapper} />
     </div>
   );
 }
