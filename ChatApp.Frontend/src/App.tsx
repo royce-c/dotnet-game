@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import useSignalR from "./useSignalR";
 
 export default function App() {
-  const [tiles, setTiles] = useState<number[][]>([]);
+  const [tiles, setTiles] = useState<number[][]>(
+    Array(3).fill(Array(3).fill(null))
+  );
   const { connection } = useSignalR("/r/boardHub");
 
   useEffect(() => {
@@ -31,18 +33,38 @@ export default function App() {
   }, [connection]);
 
   const handleClick = async (row: number, column: number) => {
-    // Update local state immediately
-    const tileValue = tiles[row][column];
-    const newValue = tileValue === null ? 0 : (tileValue + 1) % 3;
-    setTiles((prevTiles) => {
-      const newTiles = [...prevTiles];
-      newTiles[row][column] = newValue;
-      return newTiles;
-    });
+    try {
+      // Update local state immediately
+      const tileValue = tiles[row][column];
+      const newValue = tileValue === null ? 0 : (tileValue + 1) % 3;
+      setTiles((prevTiles) => {
+        const newTiles = [...prevTiles];
+        newTiles[row][column] = newValue;
+        return newTiles;
+      });
 
-    // Notify server with the updated value
-    if (connection) {
-      connection.invoke("UpdateTile", row, column, newValue);
+      // Notify server with the updated value
+      const response = await fetch(`/api/board?row=${row}&column=${column}&value=${newValue}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          row,
+          column,
+          value: newValue
+        })
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Update local state based on the response
+      const updatedTiles = await response.json();
+      setTiles(updatedTiles);
+    } catch (error) {
+      console.error("Error updating tile:", error);
+      // Handle error gracefully
     }
   };
 
