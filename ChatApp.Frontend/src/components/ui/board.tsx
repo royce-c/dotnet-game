@@ -6,7 +6,8 @@ interface BoardProps {
 }
 
 const Board: React.FC<BoardProps> = ({ tiles, onClick }) => {
-    return (
+  return (
+    <div className="p-4">
       <table>
         <tbody>
           {tiles.map((row, rowIndex) => (
@@ -21,7 +22,12 @@ const Board: React.FC<BoardProps> = ({ tiles, onClick }) => {
                     height: 50,
                     border: "1px solid black",
                     textAlign: "center",
-                    backgroundColor: value === 0 ? "black" : value === 1 ? "white" : "transparent",
+                    backgroundColor:
+                      value === 0
+                        ? "black"
+                        : value === 1
+                        ? "white"
+                        : "transparent",
                     color: value === 0 ? "white" : "black",
                   }}
                 >
@@ -32,9 +38,8 @@ const Board: React.FC<BoardProps> = ({ tiles, onClick }) => {
           ))}
         </tbody>
       </table>
-    );
-  };
-  
-  
+    </div>
+  );
+};
 
 export default Board;

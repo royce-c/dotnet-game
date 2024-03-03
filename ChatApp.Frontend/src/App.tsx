@@ -21,19 +21,20 @@ export default function App() {
     fetch("/api/Users/usernames")
       .then((response) => response.json())
       .then((data) => setUsernames(data))
-      .catch((error) =>
-        console.error("Error fetching usernames:", error)
-      );
+      .catch((error) => console.error("Error fetching usernames:", error));
 
     if (connection) {
       // Event listener for updates from server
-      connection.on("UpdateTile", (row: number, column: number, value: number) => {
-        setTiles((prevTiles) => {
-          const newTiles = [...prevTiles];
-          newTiles[row][column] = value;
-          return newTiles;
-        });
-      });
+      connection.on(
+        "UpdateTile",
+        (row: number, column: number, value: number) => {
+          setTiles((prevTiles) => {
+            const newTiles = [...prevTiles];
+            newTiles[row][column] = value;
+            return newTiles;
+          });
+        }
+      );
 
       // Event listener for new usernames
       connection.on("ReceiveMessage", (newUsername: string) => {
@@ -83,12 +84,16 @@ export default function App() {
   };
 
   return (
-    <div className="App">
-      <h1>Pixel Art Maker</h1>
-      <p>{connection ? "Connected" : "Not connected"}</p>
+    <div className="App max-w-lg mx-auto p-4 bg-white shadow-md rounded-lg text-center">
+      <h1 className="text-3xl font-semibold mb-4 text-gray-800">
+        Pixel Art Maker
+      </h1>
+      <p className="mb-4 text-gray-600">
+        {connection ? "Connected" : "Not connected"}
+      </p>
       {showForm && <UsernameForm onSubmit={handleUsernameSubmit} />}
-      <UserList usernames={usernames} />
       <Board tiles={tiles} onClick={handleClickWrapper} />
+      <UserList usernames={usernames} />
     </div>
   );
 }
