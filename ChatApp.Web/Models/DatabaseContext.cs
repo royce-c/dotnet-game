@@ -7,8 +7,6 @@ public class DatabaseContext : DbContext
   public DatabaseContext(DbContextOptions<DatabaseContext> options)
       : base(options) { }
 
-  public DbSet<Message> Messages => Set<Message>();
-
   public DbSet<User> Users => Set<User>();
 
   public DbSet<Tile> Tiles => Set<Tile>();
