@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useSignalR from "./useSignalR";
 import Board from "./components/ui/board";
 import handleClick from "./handleClick";
@@ -7,20 +7,22 @@ import fetchLayout from "./fetchLayout";
 export default function App() {
   const [tiles, setTiles] = useState<number[][]>(
     Array(10).fill(Array(10).fill(null))
-  );  
+  );
   const { connection } = useSignalR("/r/gameHub");
   const [username, setUsername] = useState("");
   const [usernames, setUsernames] = useState<string[]>([]);
+  const [showForm, setShowForm] = useState(true);
 
   useEffect(() => {
     // Initial fetch for initial state
     fetchLayout().then(setTiles);
 
     fetch("/api/Users/usernames")
-    .then((response) => response.json())
-    .then((data) => setUsernames(data))
-    .catch((error) => console.error("Error fetching usernames:", error));
-
+      .then((response) => response.json())
+      .then((data) => setUsernames(data))
+      .catch((error) =>
+        console.error("Error fetching usernames:", error)
+      );
 
     if (connection) {
       // Event listener for updates from server
@@ -68,6 +70,7 @@ export default function App() {
         body: JSON.stringify({ username }),
       });
       setUsername("");
+      setShowForm(false); // Hide the form after username is set
     } catch (error) {
       console.error("Error creating username:", error);
       // Handle error gracefully
@@ -88,15 +91,17 @@ export default function App() {
     <div className="App">
       <h1>Pixel Board</h1>
       <p>{connection ? "Connected" : "Not connected"}</p>
-      <form onSubmit={handleUsernameSubmit}>
-        <input
-          type="text"
-          value={username}
-          onChange={handleUsernameChange}
-          placeholder="Enter username"
-        />
-        <button type="submit">Set Username</button>
-      </form>
+      {showForm && (
+        <form onSubmit={handleUsernameSubmit}>
+          <input
+            type="text"
+            value={username}
+            onChange={handleUsernameChange}
+            placeholder="Enter username"
+          />
+          <button type="submit">Set Username</button>
+        </form>
+      )}
       <h2>Users:</h2>
       <ul>
         {usernames.map((name) => (
