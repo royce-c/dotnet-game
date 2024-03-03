@@ -3,13 +3,14 @@ import useSignalR from "./useSignalR";
 import Board from "./components/ui/board";
 import handleClick from "./handleClick";
 import fetchLayout from "./fetchLayout";
+import UserList from "./components/ui/UserList";
+import UsernameForm from "./components/ui/UsernameForm";
 
 export default function App() {
   const [tiles, setTiles] = useState<number[][]>(
     Array(10).fill(Array(10).fill(null))
   );
   const { connection } = useSignalR("/r/gameHub");
-  const [username, setUsername] = useState("");
   const [usernames, setUsernames] = useState<string[]>([]);
   const [showForm, setShowForm] = useState(true);
 
@@ -55,12 +56,7 @@ export default function App() {
     };
   }, [connection]);
 
-  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
-  };
-
-  const handleUsernameSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleUsernameSubmit = async (username: string) => {
     try {
       await fetch("/api/users", {
         method: "POST",
@@ -69,7 +65,6 @@ export default function App() {
         },
         body: JSON.stringify({ username }),
       });
-      setUsername("");
       setShowForm(false); // Hide the form after username is set
     } catch (error) {
       console.error("Error creating username:", error);
@@ -89,25 +84,10 @@ export default function App() {
 
   return (
     <div className="App">
-      <h1>Pixel Board</h1>
+      <h1>Pixel Art Maker</h1>
       <p>{connection ? "Connected" : "Not connected"}</p>
-      {showForm && (
-        <form onSubmit={handleUsernameSubmit}>
-          <input
-            type="text"
-            value={username}
-            onChange={handleUsernameChange}
-            placeholder="Enter username"
-          />
-          <button type="submit">Set Username</button>
-        </form>
-      )}
-      <h2>Users:</h2>
-      <ul>
-        {usernames.map((name) => (
-          <li key={name}>{name}</li>
-        ))}
-      </ul>
+      {showForm && <UsernameForm onSubmit={handleUsernameSubmit} />}
+      <UserList usernames={usernames} />
       <Board tiles={tiles} onClick={handleClickWrapper} />
     </div>
   );
