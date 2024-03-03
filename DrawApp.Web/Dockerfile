@@ -5,8 +5,6 @@ ARG DOTNET_SDK_VERSION=8.0
 FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_SDK_VERSION}${DOTNET_OS_VERSION} AS build
 WORKDIR /src
 
-# add an extra step to build the frontend and copy the wwwroot
-
 # copy everything
 COPY . ./
 # restore as distinct layers
@@ -21,4 +19,4 @@ ENV ASPNETCORE_ENVIRONMENT Production
 EXPOSE 8080
 WORKDIR /app
 COPY --from=build /app .
-ENTRYPOINT [ "dotnet", "ChatApp.Web.dll" ]
+ENTRYPOINT [ "dotnet", "DrawApp.Web.dll" ]
