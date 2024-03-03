@@ -33,9 +33,9 @@ export default function App() {
       });
 
       // Event listener for new usernames
-      // connection.on("ReceiveMessage", (newUsername: string) => {
-      //   setUsernames((prevUsernames) => [...prevUsernames, newUsername]);
-      // });
+      connection.on("ReceiveMessage", (newUsername: string) => {
+        setUsernames((prevUsernames) => [...prevUsernames, newUsername]);
+      });
 
       // Event listener for receiving all usernames on connect
       connection.on("ReceiveUsernames", (allUsernames: string[]) => {
@@ -47,7 +47,7 @@ export default function App() {
     return () => {
       if (connection) {
         connection.off("UpdateTile");
-        // connection.off("ReceiveMessage");
+        connection.off("ReceiveMessage");
         connection.off("ReceiveUsernames");
       }
     };
