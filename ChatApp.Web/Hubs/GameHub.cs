@@ -14,12 +14,3 @@ public class GameHub : Hub
         return base.OnDisconnectedAsync(exception);
     }
 }
-// public async Task SendBoardState(int?[,] board)
-// {
-//     await Clients.All.SendAsync("ReceiveBoardState", board);
-// }
-
-// public async Task UpdateTile(int row, int column, int value)
-// {
-//     await Clients.All.SendAsync("UpdateTile", row, column, value);
-// }
