@@ -1,7 +1,7 @@
 export default async function handleClick(row: number, column: number, tiles: number[][]) {
     // Update local state immediately
     const tileValue = tiles[row][column];
-    const newValue = tileValue === null ? 0 : (tileValue + 1) % 3;
+    const newValue = tileValue === null ? 0 : (tileValue + 1) % 2;
     const newTiles = [...tiles];
     newTiles[row][column] = newValue;
   

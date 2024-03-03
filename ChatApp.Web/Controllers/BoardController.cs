@@ -55,7 +55,7 @@ public class BoardController : ControllerBase
             return BadRequest("Invalid row or column value.");
         }
 
-        if (value < 0 || value > 2)
+        if (value < 0 || value > 1)
         {
             return BadRequest("Invalid tile value.");
         }

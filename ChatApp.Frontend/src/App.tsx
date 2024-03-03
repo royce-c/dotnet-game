@@ -80,7 +80,7 @@ export default function App() {
 
   return (
     <div className="App">
-      <h1>3x3 Board</h1>
+      <h1>Pixel Board</h1>
       <p>{connection ? "Connected" : "Not connected"}</p>
       <form onSubmit={handleUsernameSubmit}>
         <input
@@ -91,7 +91,7 @@ export default function App() {
         />
         <button type="submit">Set Username</button>
       </form>
-      <h2>Usernames:</h2>
+      <h2>Users:</h2>
       <ul>
         {usernames.map((name) => (
           <li key={name}>{name}</li>
