@@ -6,8 +6,8 @@ import fetchLayout from "./fetchLayout";
 
 export default function App() {
   const [tiles, setTiles] = useState<number[][]>(
-    Array(3).fill(Array(3).fill(null))
-  );
+    Array(10).fill(Array(10).fill(null))
+  );  
   const { connection } = useSignalR("/r/gameHub");
   const [username, setUsername] = useState("");
   const [usernames, setUsernames] = useState<string[]>([]);

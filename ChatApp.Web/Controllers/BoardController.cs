@@ -25,10 +25,10 @@ public class BoardController : ControllerBase
         var tiles = await _context.Tiles.ToListAsync();
         var boardList = new List<List<int?>>();
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 10; i++)
         {
             var row = new List<int?>();
-            for (int j = 0; j < 3; j++)
+            for (int j = 0; j < 10; j++)
             {
                 var tile = tiles.FirstOrDefault(t => t.Row == i && t.Column == j);
                 if (tile != null)
@@ -43,13 +43,14 @@ public class BoardController : ControllerBase
             boardList.Add(row);
         }
 
+
         return Ok(boardList);
     }
 
     [HttpPost]
     public async Task<ActionResult> SetTile([FromQuery] int row, [FromQuery] int column, [FromQuery] int value)
     {
-        if (row < 0 || row >= 3 || column < 0 || column >= 3)
+        if (row < 0 || row >= 10 || column < 0 || column >= 10)
         {
             return BadRequest("Invalid row or column value.");
         }

@@ -25,4 +25,3 @@ export default async function handleClick(row: number, column: number, tiles: nu
     const updatedTiles = await response.json();
     return updatedTiles;
   }
-  
