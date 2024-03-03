@@ -16,6 +16,12 @@ export default function App() {
     // Initial fetch for initial state
     fetchLayout().then(setTiles);
 
+    fetch("/api/Users/usernames")
+    .then((response) => response.json())
+    .then((data) => setUsernames(data))
+    .catch((error) => console.error("Error fetching usernames:", error));
+
+
     if (connection) {
       // Event listener for updates from server
       connection.on("UpdateTile", (row: number, column: number, value: number) => {
@@ -27,9 +33,9 @@ export default function App() {
       });
 
       // Event listener for new usernames
-      connection.on("ReceiveMessage", (newUsername: string) => {
-        setUsernames((prevUsernames) => [...prevUsernames, newUsername]);
-      });
+      // connection.on("ReceiveMessage", (newUsername: string) => {
+      //   setUsernames((prevUsernames) => [...prevUsernames, newUsername]);
+      // });
 
       // Event listener for receiving all usernames on connect
       connection.on("ReceiveUsernames", (allUsernames: string[]) => {
@@ -41,7 +47,7 @@ export default function App() {
     return () => {
       if (connection) {
         connection.off("UpdateTile");
-        connection.off("ReceiveMessage");
+        // connection.off("ReceiveMessage");
         connection.off("ReceiveUsernames");
       }
     };
