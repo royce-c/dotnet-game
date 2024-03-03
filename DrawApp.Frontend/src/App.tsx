@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useSignalR from "./useSignalR";
 import Board from "./components/ui/board";
 import handleClick from "./handleClick";
