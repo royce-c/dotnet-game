@@ -51,6 +51,12 @@ Add database connection string to the .env file:
 DATABASE_CONNECTION_STRING=
 ```
 
+Run the database migrations:
+
+```bash
+dotnet ef database update
+```
+
 Run the backend:
 
 ```bash
