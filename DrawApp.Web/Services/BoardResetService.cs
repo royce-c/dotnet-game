@@ -1,6 +1,9 @@
+// BoardResetService.cs
 using Microsoft.Extensions.Hosting;
 using ChatApp.Web.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,7 +21,7 @@ namespace ChatApp.Web.Services
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _timer = new Timer(ResetBoard, null, TimeSpan.Zero, TimeSpan.FromMinutes(60)); // Executes x minutes
+            _timer = new Timer(ResetBoard, null, TimeSpan.Zero, TimeSpan.FromMinutes(1)); // Executes every minute
             return Task.CompletedTask;
         }
 
@@ -27,12 +30,17 @@ namespace ChatApp.Web.Services
             using (var scope = _serviceProvider.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-                var tiles = await context.Tiles.ToListAsync();
 
+                // Reset all tiles
+                var tiles = await context.Tiles.ToListAsync();
                 foreach (var tile in tiles)
                 {
                     tile.Value = 0; // Reset the value of each tile
                 }
+
+                // Delete all users
+                var users = await context.Users.ToListAsync();
+                context.Users.RemoveRange(users);
 
                 await context.SaveChangesAsync();
             }
