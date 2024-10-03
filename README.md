@@ -63,4 +63,4 @@ Run the backend:
 dotnet run
 ```
 
-Visit `http://127.0.0.1:5227` to view the application.
+Visit [http://127.0.0.1:5227](http://127.0.0.1:5227) to view the application.
