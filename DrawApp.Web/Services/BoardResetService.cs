@@ -35,7 +35,7 @@ namespace ChatApp.Web.Services
                 var tiles = await context.Tiles.ToListAsync();
                 foreach (var tile in tiles)
                 {
-                    tile.Value = 0; // Reset the value of each tile
+                    tile.Value = 1; // Reset the value of each tile
                 }
 
                 // Delete all users
