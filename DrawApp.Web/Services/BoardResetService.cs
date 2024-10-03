@@ -21,7 +21,7 @@ namespace ChatApp.Web.Services
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _timer = new Timer(ResetBoard, null, TimeSpan.Zero, TimeSpan.FromMinutes(1)); // Executes every minute
+            _timer = new Timer(ResetBoard, null, TimeSpan.Zero, TimeSpan.FromMinutes(60)); // Executes every x minutes
             return Task.CompletedTask;
         }
 
