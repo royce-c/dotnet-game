@@ -1,5 +1,6 @@
 using ChatApp.Web.Models;
 using ChatApp.Web.Hubs;
+using ChatApp.Web.Services;
 using Microsoft.EntityFrameworkCore;
 
 DotNetEnv.Env.Load();
@@ -22,10 +23,10 @@ builder.Services.AddDbContext<DatabaseContext>(
     }
 );
 
+builder.Services.AddHostedService<BoardResetService>();
+
 builder.Services.AddControllers();
-
 builder.Services.AddSignalR();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
